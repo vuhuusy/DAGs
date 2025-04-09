@@ -1,6 +1,5 @@
 from airflow import DAG
 from airflow.providers.apache.spark.operators.spark_kubernetes import SparkKubernetesOperator
-from airflow.providers.apache.spark.sensors.spark_kubernetes import SparkKubernetesSensor
 from airflow.utils.dates import days_ago
 
 default_args = {
@@ -9,26 +8,18 @@ default_args = {
 }
 
 with DAG(
-    dag_id='spark_pi_operator_dag',
+    dag_id='spark_pi_with_operator',
     default_args=default_args,
     schedule_interval=None,
     catchup=False,
-    description='Run Spark Pi job using SparkKubernetesOperator',
+    description='Submit Spark Pi job via SparkKubernetesOperator',
 ) as dag:
 
     submit_spark_pi = SparkKubernetesOperator(
         task_id='submit_spark_pi',
-        namespace='spark-jobs',
-        application_file="https://raw.githubusercontent.com/kubeflow/spark-operator/master/examples/spark-pi.yaml",
-        do_xcom_push=True,
+        namespace='spark-jobs',  # Đảm bảo namespace đã được tạo trên Kubernetes
+        application_file='https://raw.githubusercontent.com/kubeflow/spark-operator/master/examples/spark-pi.yaml',  # Đường dẫn đến file cấu hình của Spark job
+        do_xcom_push=True,  # Kết quả từ job Spark có thể được gửi qua XCom
     )
 
-    monitor_spark_pi = SparkKubernetesSensor(
-        task_id='monitor_spark_pi',
-        namespace='spark-jobs',
-        application_name="{{ task_instance.xcom_pull(task_ids='submit_spark_pi')['metadata']['name'] }}",
-        poke_interval=10,
-        timeout=600,
-    )
-
-    submit_spark_pi >> monitor_spark_pi
+    submit_spark_pi
