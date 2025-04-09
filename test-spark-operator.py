@@ -18,7 +18,7 @@ with DAG(
     submit_spark_pi = SparkKubernetesOperator(
         task_id='submit_spark_pi',
         namespace='spark-jobs',  # Đảm bảo namespace đã được tạo trên Kubernetes
-        application_file='https://raw.githubusercontent.com/kubeflow/spark-operator/master/examples/spark-pi.yaml',  # Đường dẫn đến file cấu hình của Spark job
+        application_file='https://raw.githubusercontent.com/kubeflow/spark-operator/refs/heads/master/examples/spark-pi.yaml',  # Đường dẫn đến file cấu hình của Spark job
         do_xcom_push=True,  # Kết quả từ job Spark có thể được gửi qua XCom
     )
 
