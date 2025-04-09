@@ -9,17 +9,17 @@ default_args = {
 }
 
 with DAG(
-    dag_id='spark_pi_with_operator',
+    dag_id='spark_pi_operator_dag',
     default_args=default_args,
     schedule_interval=None,
     catchup=False,
-    description='Submit Spark Pi job via SparkKubernetesOperator',
+    description='Run Spark Pi job using SparkKubernetesOperator',
 ) as dag:
 
     submit_spark_pi = SparkKubernetesOperator(
         task_id='submit_spark_pi',
         namespace='spark-jobs',
-        application_file='https://raw.githubusercontent.com/kubeflow/spark-operator/master/examples/spark-pi.yaml',
+        application_file="https://raw.githubusercontent.com/kubeflow/spark-operator/master/examples/spark-pi.yaml",
         do_xcom_push=True,
     )
 
