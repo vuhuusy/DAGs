@@ -14,5 +14,5 @@ with DAG(
         namespace='spark-jobs',
         application_file='spark-pi.yaml',  # relative path trong container
         kubernetes_conn_id='kubernetes_default',
-        do_xcom_push=True
+        do_xcom_push=False
     )
